@@ -27,6 +27,7 @@ HyperIV: Real-time Implied Volatility Smoothing. Yongxin Yang, Wenqi Chen, Chao 
 @inproceedings{yang2025hyperiv,
   title={HyperIV: Real-time Implied Volatility Smoothing},
   author={Yang, Yongxin and Chen, Wenqi and Shu, Chao and Hospedales, Timothy},
-  booktitle={International Conference on Machine Learning (ICML)}
+  booktitle={International Conference on Machine Learning (ICML)},
+  year={2025}
 }
 ```
