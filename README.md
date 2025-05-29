@@ -18,3 +18,15 @@ The project includes two main Jupyter notebooks:
 
 1. `data_prep.ipynb`: Demonstrates the data preparation pipeline for option market data
 2. `model_train.ipynb`: Contains code for model training and evaluation
+
+## Reference
+
+HyperIV: Real-time Implied Volatility Smoothing. Yongxin Yang, Wenqi Chen, Chao Shu, Timothy Hospedales. ICML 2025.
+
+```latex
+@inproceedings{yang2025hyperiv,
+  title={HyperIV: Real-time Implied Volatility Smoothing},
+  author={Yang, Yongxin and Chen, Wenqi and Shu, Chao and Hospedales, Timothy},
+  booktitle={International Conference on Machine Learning (ICML)}
+}
+```
