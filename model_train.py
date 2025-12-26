@@ -6,7 +6,12 @@ from hyperiv_util import SetEmbeddingNetwork, HyperNetwork
 from trainer_util import trainer
 import torch.optim as optim
 
+# h5_file = "spx_w_ref.h5"
+# train_split = "2025-12-23"
+
+
 pth_file = "spx_hyperiv.pth"
+train_split = "2025-08-01"
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
 
 df = pd.read_hdf(h5_file, 'df')
@@ -14,7 +19,7 @@ df = pd.read_hdf(h5_file, 'df')
 N = 1024
 B = 128
 
-train_split = "2025-08-01"
+
 train_dates = df[df["date"] < train_split]["date"].unique()
 train_dataset = OptionDataset(df[df["date"].isin(train_dates)], N=N, sample=True)
 train_dataloader = DataLoader(train_dataset, batch_size=B, shuffle=True, drop_last=True)
