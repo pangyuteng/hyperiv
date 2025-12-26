@@ -6,7 +6,8 @@ from hyperiv_util import SetEmbeddingNetwork, HyperNetwork
 from trainer_util import trainer
 import torch.optim as optim
 
-df = pd.read_hdf('spx_w_ref.h5', 'df')
+h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+df = pd.read_hdf(h5_file, 'df')
 
 N = 1024
 B = 128
@@ -43,11 +44,9 @@ hyper_model = SetEmbeddingNetwork(input_dim, output_dim).to(device)
 
 model = HyperNetwork(hyper_model, iv_network)
 
-#optimizer = optim.Adam(model.parameters(), lr=1e-3)
-optimizer = optim.Adam(model.parameters(), lr=1e-5)
+optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
-#num_epochs = 500
-num_epochs = 10
+num_epochs = 500
 lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs, eta_min=1e-5)
 
 for epoch in range(num_epochs):
