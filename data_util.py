@@ -15,7 +15,7 @@ def find_closest_elements(df, col_name, ref_list):
 
 
 class OptionDataset(Dataset):
-    def __init__(self, df, N=1024, sample=True, sample_N=4):
+    def __init__(self, df, N=1024, sample=True, sample_N=10):
         self.full_data = df
         self.few_data = df[df["is_ref"] == 1]
         self.N = N
