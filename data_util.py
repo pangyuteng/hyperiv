@@ -15,7 +15,7 @@ def find_closest_elements(df, col_name, ref_list):
 
 
 class OptionDataset(Dataset):
-    def __init__(self, df, N=1024, sample=True, sample_N=10):
+    def __init__(self, df, N=1024, sample=True, sample_N=4):
         self.full_data = df
         self.few_data = df[df["is_ref"] == 1]
         self.N = N
@@ -31,7 +31,7 @@ class OptionDataset(Dataset):
 
         few_data_selected = self.few_data[self.few_data["date"] == date]
         #z = few_data_selected[["log_moneyness", "tau", "implied_volatility"]].values
-        z = few_data_selected[["log_moneyness", "tau", "implied_volatility"]].sample(n=self.sample_N).values
+        z = few_data_selected[["log_moneyness", "tau", "implied_volatility"]].sample(n=self.sample_N,replace=True).values
 
         full_data_selected = self.full_data[self.full_data["date"] == date]
 
