@@ -73,8 +73,7 @@ def gen_data(dstamp,zero_day_only=False):
     # df.implied_volatility
     # df.delta
     df['time_to_maturity']=((df.tau*TOTAL_SECONDS_ONE_YEAR)/(60*60*24)) #???
-    #df['time_to_maturity']=((df.tau*TOTAL_SECONDS_ONE_YEAR)/(60*60*24)).astype(int) #???
-    
+
     df = df[(df.tau>0)&(df.log_moneyness.notnull())]
     df = df[cols]
     df['is_ref'] = (np.random.rand(len(df)) > 0.8).astype(int)
