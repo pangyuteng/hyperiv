@@ -14,10 +14,9 @@ model_pth_file = 'spx_model.pth'
 
 #train_split = "2025-12-23"
 #h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
-num_epochs = 5
+#num_epochs = 5
 
-
-train_split = "2024-10-01"
+train_split = "2024-12-01"
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
 num_epochs = 500
 
