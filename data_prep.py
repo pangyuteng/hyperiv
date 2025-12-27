@@ -77,9 +77,14 @@ def gen_data(dstamp,zero_day_only=False):
     df = df[(df.tau>0)&(df.log_moneyness.notnull())]
     df = df[cols]
     df['is_ref'] = (np.random.rand(len(df)) > 0.8).astype(int)
-    # https://quant.stackexchange.com/questions/43596/what-is-forward-moneyness-and-how-to-calculate-it
+
     if False:
-        target_ttms = [0]
+        #
+        # NOTE: probably we want this? but we can't, as 
+        # you don't control the expiry or delta of the contracts coming in
+        # ***but*** you are using 1-min interval, which is not great, but you could maybe get fixed delta,expiry
+        #
+        target_ttms = [0,1,2,3] #?
         target_deltas = [0.5, 0.25, -0.25]
         df_tmp = df.groupby('date').apply(find_closest_elements, 'time_to_maturity', target_ttms, include_groups=False)
         reference_options = df_tmp.groupby(['date','time_to_maturity']).apply(find_closest_elements, 'delta', target_deltas, include_groups=False)
