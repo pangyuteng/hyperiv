@@ -1,5 +1,5 @@
-spx_hyperiv.pth
-spx_w_ref.h5
+*.pth
+*.h5
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

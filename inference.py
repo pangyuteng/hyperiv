@@ -8,6 +8,10 @@ from trainer_util import trainer
 import torch.optim as optim
 
 
+
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(device)
+
 iv_network = torch.nn.Sequential(
     torch.nn.Linear(2, 16),
     torch.nn.Tanh(),
@@ -15,29 +19,31 @@ iv_network = torch.nn.Sequential(
     torch.nn.Tanh(),
     torch.nn.Linear(16, 1),
     torch.nn.Softplus()
-)
-
+).to(device)
 n_params = sum([p.numel() for p in iv_network.parameters()])
 
 input_dim = 3
 output_dim = n_params
 print(input_dim,output_dim)
 
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-print(device)
 
-print(input_dim, output_dim)
 hyper_model = SetEmbeddingNetwork(input_dim, output_dim).to(device)
 
-#model = HyperNetwork(hyper_model, iv_network)
-#model = iv_network
-#model = hyper_model
+model = HyperNetwork(hyper_model, iv_network)
 
-pth_file = "spx_hyperiv.pth"
-hyper_model.load_state_dict(torch.load(pth_file,weights_only=True))
-hyper_model.eval()
+hyper_pth_file = "spx_hyper.pth"
+iv_pth_file = "spx_iv.pth"
+model_pth_file = 'spx_model.pth'
 
-x = np.random.rand(10,1,3)
+model.load_state_dict(torch.load(model_pth_file,weights_only=True))
+model.eval()
+
+x = np.random.rand(1,1,3)
 x = torch.from_numpy(x).to(device).float()
 out = hyper_model(x)
 print(out.shape)
+
+x = np.random.rand(1,1,2)
+x = torch.from_numpy(x).to(device).float()
+out = iv_network(x)
+print(out)
