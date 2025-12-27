@@ -38,12 +38,10 @@ model_pth_file = 'spx_model.pth'
 model.load_state_dict(torch.load(model_pth_file,weights_only=True))
 model.eval()
 
-x = np.random.rand(1,1,3)
+z = np.random.rand(1,9,3)
+z = torch.from_numpy(z).to(device).float()
+x = np.random.rand(1,3,2)
 x = torch.from_numpy(x).to(device).float()
-out = hyper_model(x)
-print(out.shape)
-
-x = np.random.rand(1,1,2)
-x = torch.from_numpy(x).to(device).float()
-out = iv_network(x)
-print(out)
+y_pred = model(z, x).squeeze(-1)
+print(y_pred.shape)
+print(y_pred)
