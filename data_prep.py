@@ -62,7 +62,7 @@ def gen_data(dstamp,zero_day_only=False):
         df = df[df.expiry == dstamp]
 
     expiry_mapper = {x:get_expiry_tstamp(x) for x in df.expiry.unique()}
-    df['date']=df.tstamp_sec
+    df['date']=df.tstamp_min # 
     df['forward_price']=df.underlying_price
     df['tau']=df.apply(lambda x: get_annualized_time_to_expiration(x,expiry_mapper),axis=1)
     df['risk_free_rate']=1e-7

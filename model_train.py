@@ -14,10 +14,11 @@ hyper_pth_file = "spx_hyper.pth"
 iv_pth_file = "spx_iv.pth"
 model_pth_file = 'spx_model.pth'
 
-# num_epochs = 500
+
 #train_split = "2025-12-23"
+#num_epochs = 500
 train_split = "2024-10-01"
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
+#h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
 
 df = pd.read_hdf(h5_file, 'df')
 
