@@ -6,9 +6,6 @@ from hyperiv_util import SetEmbeddingNetwork, HyperNetwork
 from trainer_util import trainer
 import torch.optim as optim
 
-h5_file = "spx_w_ref.h5"
-train_split = "2025-12-23"
-num_epochs = 5
 
 hyper_pth_file = "spx_hyper.pth"
 iv_pth_file = "spx_iv.pth"
@@ -16,9 +13,13 @@ model_pth_file = 'spx_model.pth'
 
 
 #train_split = "2025-12-23"
-#num_epochs = 500
-train_split = "2024-10-01"
 #h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
+num_epochs = 5
+
+
+train_split = "2024-10-01"
+h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+num_epochs = 500
 
 df = pd.read_hdf(h5_file, 'df')
 
