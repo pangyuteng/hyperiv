@@ -6,13 +6,17 @@ from hyperiv_util import SetEmbeddingNetwork, HyperNetwork
 from trainer_util import trainer
 import torch.optim as optim
 
-# h5_file = "spx_w_ref.h5"
+h5_file = "spx_w_ref.h5"
+train_split = "2025-12-23"
+num_epochs = 5
+
+hyper_pth_file = "spx_hyper.pth"
+iv_pth_file = "spx_iv.pth"
+model_pth_file = 'spx_model.pth'
+
+# num_epochs = 500
 # train_split = "2025-12-23"
-
-
-pth_file = "spx_hyperiv.pth"
-train_split = "2025-08-01"
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+# h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
 
 df = pd.read_hdf(h5_file, 'df')
 
@@ -52,7 +56,6 @@ model = HyperNetwork(hyper_model, iv_network)
 
 optimizer = optim.Adam(model.parameters(), lr=1e-3)
 
-num_epochs = 500
 lr_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs, eta_min=1e-5)
 
 for epoch in range(num_epochs):
@@ -62,5 +65,7 @@ for epoch in range(num_epochs):
     test_loss_mse, test_loss_mae, test_loss_cal, test_loss_g, test_loss_integral = trainer(test_dataloader, model, device, optimizer, is_train=False)
     print(f'Epoch {epoch+1}/{num_epochs}, Test MSE: {test_loss_mse:.8f}, Test MAE: {test_loss_mae:.8f}, Test CAL: {test_loss_cal:.8f}, Test G: {test_loss_g:.8f}, Test Integral: {test_loss_integral:.8f}')
 
-torch.save(hyper_model.state_dict(), pth_file)
+torch.save(hyper_model.state_dict(), hyper_pth_file)
+torch.save(iv_network.state_dict(), iv_pth_file)
+torch.save(model.state_dict(), model_pth_file)
 

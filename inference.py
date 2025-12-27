@@ -26,15 +26,18 @@ print(input_dim,output_dim)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
+print(input_dim, output_dim)
 hyper_model = SetEmbeddingNetwork(input_dim, output_dim).to(device)
+
+#model = HyperNetwork(hyper_model, iv_network)
+#model = iv_network
+#model = hyper_model
 
 pth_file = "spx_hyperiv.pth"
 hyper_model.load_state_dict(torch.load(pth_file,weights_only=True))
 hyper_model.eval()
 
-x = np.random.rand(128,3)
+x = np.random.rand(10,1,3)
 x = torch.from_numpy(x).to(device).float()
 out = hyper_model(x)
 print(out.shape)
-
-#torch.save(hyper_model.state_dict(), pth_file)
