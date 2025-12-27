@@ -38,7 +38,7 @@ model_pth_file = 'spx_model.pth'
 model.load_state_dict(torch.load(model_pth_file,weights_only=True))
 model.eval()
 
-z = np.random.rand(1,9,3)
+z = np.random.rand(1,100,3)
 z = torch.from_numpy(z).to(device).float()
 x = np.random.rand(1,3,2)
 x = torch.from_numpy(x).to(device).float()
