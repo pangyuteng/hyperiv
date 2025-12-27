@@ -62,7 +62,7 @@ def gen_data(dstamp,zero_day_only=False):
         df = df[df.expiry == dstamp]
 
     expiry_mapper = {x:get_expiry_tstamp(x) for x in df.expiry.unique()}
-    df['date']=df.tstamp_min
+    df['date']=df.tstamp_sec
     df['forward_price']=df.underlying_price
     df['tau']=df.apply(lambda x: get_annualized_time_to_expiration(x,expiry_mapper),axis=1)
     df['risk_free_rate']=1e-7
@@ -84,7 +84,7 @@ def gen_data(dstamp,zero_day_only=False):
         # you don't control the expiry or delta of the contracts coming in
         # ***but*** you are using 1-min interval, which is not great, but you could maybe get fixed delta,expiry
         #
-        target_ttms = [0,1,2,3] #?
+        target_ttms = [0,1,2,3]
         target_deltas = [0.5, 0.25, -0.25]
         df_tmp = df.groupby('date').apply(find_closest_elements, 'time_to_maturity', target_ttms, include_groups=False)
         reference_options = df_tmp.groupby(['date','time_to_maturity']).apply(find_closest_elements, 'delta', target_deltas, include_groups=False)
