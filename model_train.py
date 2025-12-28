@@ -6,9 +6,9 @@ from data_util import OptionDataset
 from hyperiv_util import SetEmbeddingNetwork, HyperNetwork
 from trainer_util import trainer
 import torch.optim as optim
+import datetime
 
-
-train_split = "2025-10-01"
+train_split = '2024-10-04'
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
 model_dir = "workdir"
 num_epochs = 500
