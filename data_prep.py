@@ -58,6 +58,15 @@ def gen_data(dstamp):
     df=df[df.underlying_symbol==ticker]
     print(df.shape)
     
+    if True:
+        # drop where tstamp_sec with too few orders
+        counts = df.drop_duplicates(['tstamp_sec', 'expiry', 'strike']).groupby('tstamp_sec').size()
+        df = df[df.tstamp_sec.apply(lambda x: counts[x] > 20)]
+        print(df.shape,'!!!!!!!!!!!!!1DROOPPPPPP')
+
+    if len(df) == 0:
+        return None
+
     df['date']=df.tstamp_sec
     df['forward_price']=df.underlying_price
     expiry_mapper = {x:get_expiry_tstamp(x) for x in df.expiry.unique()}
@@ -76,8 +85,17 @@ def gen_data(dstamp):
     df = df[COLUMNS]
     df = df.dropna()
 
-    if True:
+    if False:
         df['is_ref'] = (np.random.rand(len(df)) > 0.8).astype(int)
+
+    if True:
+        target_ttms = [0,1,5]
+        target_deltas = [0.5, 0.25, -0.25]
+        df_tmp = df.groupby('date').apply(find_closest_elements, 'time_to_maturity', target_ttms, include_groups=False)
+        reference_options = df_tmp.groupby(['date','time_to_maturity']).apply(find_closest_elements, 'delta', target_deltas, include_groups=False)
+        df['is_ref'] = 0
+        df.loc[reference_options.index.get_level_values(-1), 'is_ref'] = 1
+        print(df.is_ref.sum(),len(df),'!!#########################')
 
     if False:
         raise NotImplementedError() # see note below.
@@ -104,20 +122,26 @@ def gen_data(dstamp):
         reference_options = df_tmp.groupby(['date','time_to_maturity']).apply(find_closest_elements, 'delta', target_deltas, include_groups=False)
         df['is_ref'] = 0
         df.loc[reference_options.index.get_level_values(-1), 'is_ref'] = 1
-
+    
     return df
 
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
 if os.path.exists(h5_file):
     raise ValueError(f"file found, delete first! {h5_file}")
 
+dstamp_list = []
 for dstamp in tqdm(dtstamp_list):
     try:
         tdf = gen_data(dstamp)
+        if tdf is None:
+            continue
         tdf.to_hdf(path_or_buf=h5_file, key='df', complevel=9, complib='blosc',append=True)
     except:
         traceback.print_exc()
+    dstamp_list.append(dstamp)
 
-#df = pd.concat(mylist)
+print(len(dstamp_list))
+print('done...')
+#df = pd.concat(foobarlist)
 #df = df.reset_index()
 #df.to_hdf(path_or_buf=h5_file, key='df', complevel=9, complib='blosc')

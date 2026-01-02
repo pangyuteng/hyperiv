@@ -34,7 +34,8 @@ def load_model():
 
     hyper_pth_file = "spx_hyper.pth"
     iv_pth_file = "spx_iv.pth"
-    model_pth_file = 'spx_model.pth'
+    #model_pth_file = 'spx_model.pth'
+    model_pth_file = './workdir/spx_model_00000.pth'
 
     model.load_state_dict(torch.load(model_pth_file,weights_only=True))
     model.eval()
@@ -42,9 +43,34 @@ def load_model():
 
 if __name__ == "__main__":
     model = load_model()
-    z = np.random.rand(1,100,3)
+    # a few points
+    z = np.random.rand(1,8,3)
     z = torch.from_numpy(z).to(device).float()
+    # grid
     x = np.random.rand(1,40,2)
     x = torch.from_numpy(x).to(device).float()
     y_pred = model(z, x).squeeze(-1)
+    y_pred = y_pred.cpu().detach().numpy()
     print(y_pred.shape)
+
+    h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+    df = pd.read_hdf(h5_file, 'df')
+
+    N = 1024
+    B = 128
+    train_dates = df["date"].unique()
+    train_dataset = OptionDataset(df, N=N, sample=True)
+    train_dataloader = DataLoader(train_dataset, batch_size=B, shuffle=True, drop_last=True)
+    for row_data in train_dataloader:
+        z,x,y_true = row_data
+        z = z.to(device).float()
+        x = x.to(device).float()
+        #print(z.shape,x.shape,y_true.shape)
+        y_pred = model(z, x).squeeze(-1)
+        y_pred = y_pred.cpu().detach().numpy().flatten()
+        y_true = y_true.cpu().detach().numpy().flatten()
+        print('y_pred',y_pred[:5],y_pred.shape)
+        print('y_true',y_true[:5],y_true.shape)
+        print(np.mean(np.square(y_pred-y_true)))
+        print("----")
+        

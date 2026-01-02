@@ -8,6 +8,8 @@ def find_closest_elements(df, col_name, ref_list):
     ref_list = np.array(ref_list)
     closest_elements = []
     for value in ref_list:
+        if len(unique_elements) == 0: # added to vaoid error when no match found given differences in source data
+            continue
         closest_index = np.abs(unique_elements - value).argmin()
         closest_elements.append(unique_elements[closest_index])
         unique_elements = np.delete(unique_elements, closest_index)

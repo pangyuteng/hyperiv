@@ -8,8 +8,8 @@ from trainer_util import trainer
 import torch.optim as optim
 import datetime
 
-train_split = '2024-10-04'
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+train_split = '2024-10-08'
+h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
 model_dir = "workdir"
 num_epochs = 500
 loss_csv_file = os.path.join(model_dir,'loss.csv')
