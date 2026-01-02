@@ -8,7 +8,10 @@ from trainer_util import trainer
 import torch.optim as optim
 import datetime
 
-train_split = '2024-10-08'
+train_split = '2025-12-19'
+h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+raise ValueError()
+train_split = '2024-10-09'
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
 model_dir = "workdir"
 num_epochs = 500
@@ -23,15 +26,16 @@ if False: # for debugging
 os.makedirs(model_dir,exist_ok=True)
 df = pd.read_hdf(h5_file, 'df')
 
-N = 1024
+# "date" is now tstamp_sec, in data_prep.py we first filter data where tstamp_sec have >20 orders
+sample_N = 5
+N = 20
 B = 128
 
 train_dates = df[df["date"] < train_split]["date"].unique()
-train_dataset = OptionDataset(df[df["date"].isin(train_dates)], N=N, sample=True)
+train_dataset = OptionDataset(df[df["date"].isin(train_dates)], N=N, sample=True, sample_N=sample_N)
 train_dataloader = DataLoader(train_dataset, batch_size=B, shuffle=True, drop_last=True)
-
 test_dates = df[df["date"] >= train_split]["date"].unique()
-test_dataset = OptionDataset(df[df["date"].isin(test_dates)], N=N, sample=False)
+test_dataset = OptionDataset(df[df["date"].isin(test_dates)], N=N, sample=False, sample_N=sample_N)
 test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False, drop_last=False)
 
 iv_network = torch.nn.Sequential(

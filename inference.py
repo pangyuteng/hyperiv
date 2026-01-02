@@ -35,7 +35,7 @@ def load_model():
     hyper_pth_file = "spx_hyper.pth"
     iv_pth_file = "spx_iv.pth"
     #model_pth_file = 'spx_model.pth'
-    model_pth_file = './workdir/spx_model_00001.pth'
+    model_pth_file = './workdir/spx_model_00002.pth'
 
     model.load_state_dict(torch.load(model_pth_file,weights_only=True))
     model.eval()
@@ -54,9 +54,11 @@ if __name__ == "__main__":
     print(y_pred.shape)
 
     h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+    raise ValueError()
+    h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
     df = pd.read_hdf(h5_file, 'df')
 
-    N = 1024
+    N = 20
     B = 128
     train_dates = df["date"].unique()
     train_dataset = OptionDataset(df, N=N, sample=True)
