@@ -11,7 +11,7 @@ import torch.optim as optim
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(device)
 
-def load_model():
+def load_model(model_pth_file):
 
 
     iv_network = torch.nn.Sequential(
@@ -32,17 +32,17 @@ def load_model():
 
     model = HyperNetwork(hyper_model, iv_network)
 
-    hyper_pth_file = "spx_hyper.pth"
-    iv_pth_file = "spx_iv.pth"
-    #model_pth_file = 'spx_model.pth'
-    model_pth_file = './workdir/spx_model_00002.pth'
-
     model.load_state_dict(torch.load(model_pth_file,weights_only=True))
     model.eval()
     return model
 
 if __name__ == "__main__":
-    model = load_model()
+    h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+    raise ValueError()
+    model_pth_file = './workdir/spx_model_00001.pth'
+    h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
+
+    model = load_model(model_pth_file)
     # a few points
     z = np.random.rand(1,8,3)
     z = torch.from_numpy(z).to(device).float()
@@ -53,9 +53,6 @@ if __name__ == "__main__":
     y_pred = y_pred.cpu().detach().numpy()
     print(y_pred.shape)
 
-    h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
-    raise ValueError()
-    h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
     df = pd.read_hdf(h5_file, 'df')
 
     N = 20
