@@ -35,7 +35,7 @@ def load_model():
     hyper_pth_file = "spx_hyper.pth"
     iv_pth_file = "spx_iv.pth"
     #model_pth_file = 'spx_model.pth'
-    model_pth_file = './workdir/spx_model_00000.pth'
+    model_pth_file = './workdir/spx_model_00001.pth'
 
     model.load_state_dict(torch.load(model_pth_file,weights_only=True))
     model.eval()
