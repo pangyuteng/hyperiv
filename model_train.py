@@ -12,7 +12,7 @@ train_split = '2025-12-19'
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
 model_kind = 'call'
 
-raise ValueError()
+#raise ValueError()
 
 train_split = '2024-10-18'
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
@@ -32,8 +32,8 @@ os.makedirs(model_dir,exist_ok=True)
 df = pd.read_hdf(h5_file, 'df')
 
 # "date" is now tstamp_sec, in data_prep.py we first filter data where tstamp_sec have >20 orders
-sample_N = 5
-N = 20
+sample_N = 4
+N = 10
 B = 128
 
 train_dates = df[df["date"] < train_split]["date"].unique()
