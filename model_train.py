@@ -11,29 +11,24 @@ import datetime
 train_split = '2025-12-19'
 h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
 model_kind = 'call'
-
+num_epochs = 500
 #raise ValueError()
 
-train_split = '2024-10-18'
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
-model_kind = 'call'
-
+train_split = '2024-10-20'
+h5_file = "/mnt/hd2bak/scratch/spx_w_ref_put.h5"
+model_kind = 'put'
+num_epochs = 50
 model_dir = "workdir"
-num_epochs = 500
-loss_csv_file = os.path.join(model_dir,'loss.csv')
 
-if False: # for debugging
-    train_split = "2025-12-24"
-    h5_file = "spx_w_ref.h5"
-    num_epochs = 5
-
+loss_csv_file = os.path.join(model_dir,f'loss-{model_kind}.csv')
 
 os.makedirs(model_dir,exist_ok=True)
 df = pd.read_hdf(h5_file, 'df')
+print(df["date"].min(),df["date"].max())
 
 # "date" is now tstamp_sec, in data_prep.py we first filter data where tstamp_sec have >20 orders
-sample_N = 4
-N = 10
+sample_N = 5
+N = 20
 B = 128
 
 train_dates = df[df["date"] < train_split]["date"].unique()

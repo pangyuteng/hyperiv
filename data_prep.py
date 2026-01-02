@@ -77,7 +77,7 @@ def gen_data(dstamp,option_type):
     df['is_call']=df.option_type.apply(lambda x: 1.0 if x == 'call' else -1.0)
     df['strike_price']=df.strike
     df['option_price']=df.price
-    df['log_moneyness'] = np.log(df.underlying_price/df.strike)
+    df['log_moneyness'] = np.log(df.forward_price/df.strike)
     #df.implied_volatility # same name, no need to make new column
     #df.delta # same name, no need to make new column
     df['time_to_maturity']=((df.tau*TOTAL_SECONDS_ONE_YEAR)/(60*60*24))
@@ -86,9 +86,8 @@ def gen_data(dstamp,option_type):
     # attempt to continue using find_closest_elements
     df = df[COLUMNS]
     df = df.dropna()
-    
 
-    target_ttms = [0,1,5,20] # likely important to use various expirations
+    target_ttms = [0,7,30,90]
     target_deltas = [0.5, 0.25, -0.25]
     tmp_df = df.groupby('date').apply(find_closest_elements, 'time_to_maturity', target_ttms, include_groups=False)
     reference_options = tmp_df.groupby(['date','time_to_maturity']).apply(find_closest_elements, 'delta', target_deltas, include_groups=False)
@@ -97,28 +96,30 @@ def gen_data(dstamp,option_type):
     print('option_type',option_type,df.is_ref.sum(),len(df),'!!#########################')
     return df
 
-call_h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
-put_h5_file = "/mnt/hd2bak/scratch/spx_w_ref_put.h5"
-if os.path.exists(call_h5_file):
-    raise ValueError(f"file found, delete first! {call_h5_file}")
-if os.path.exists(call_h5_file):
-    raise ValueError(f"file found, delete first! {put_h5_file}")
+if __name__ == "__main__":
 
-dstamp_list = []
-for dstamp in tqdm(dtstamp_list):
-    try:
-        call_df = gen_data(dstamp,'call')
-        if call_df is not None:
-            call_df.to_hdf(path_or_buf=call_h5_file, key='df', complevel=9, complib='blosc',append=True)
-        put_df = gen_data(dstamp,'put')
-        if put_df is not None:
-            put_df.to_hdf(path_or_buf=put_h5_file, key='df', complevel=9, complib='blosc',append=True)
-    except:
-        traceback.print_exc()
-    dstamp_list.append(dstamp)
+    call_h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5" # TODO: ask,bid
+    put_h5_file = "/mnt/hd2bak/scratch/spx_w_ref_put.h5"
+    if os.path.exists(call_h5_file):
+        raise ValueError(f"file found, delete first! {call_h5_file}")
+    if os.path.exists(call_h5_file):
+        raise ValueError(f"file found, delete first! {put_h5_file}")
 
-print(len(dstamp_list))
-print('done...')
-#df = pd.concat(foobarlist)
-#df = df.reset_index()
-#df.to_hdf(path_or_buf=h5_file, key='df', complevel=9, complib='blosc')
+    dstamp_list = []
+    for dstamp in tqdm(dtstamp_list):
+        try:
+            call_df = gen_data(dstamp,'call')
+            if call_df is not None:
+                call_df.to_hdf(path_or_buf=call_h5_file, key='df', complevel=9, complib='blosc',append=True)
+            put_df = gen_data(dstamp,'put')
+            if put_df is not None:
+                put_df.to_hdf(path_or_buf=put_h5_file, key='df', complevel=9, complib='blosc',append=True)
+        except:
+            traceback.print_exc()
+        dstamp_list.append(dstamp)
+
+    print(len(dstamp_list))
+    print('done...')
+    #df = pd.concat(foobarlist)
+    #df = df.reset_index()
+    #df.to_hdf(path_or_buf=h5_file, key='df', complevel=9, complib='blosc')
