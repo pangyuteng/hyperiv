@@ -39,7 +39,7 @@ def load_model(model_pth_file):
 if __name__ == "__main__":
     #h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
     #raise ValueError()
-    model_pth_file = './workdir/spx_model_call_00002.pth'
+    model_pth_file = './workdir/spx_model_put_00009.pth'
     h5_file = "/mnt/hd2bak/scratch/spx_w_ref_put.h5"
 
     model = load_model(model_pth_file)
