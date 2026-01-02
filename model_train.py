@@ -9,10 +9,15 @@ import torch.optim as optim
 import datetime
 
 train_split = '2025-12-19'
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref.h5"
+h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
+model_kind = 'call'
+
 raise ValueError()
-train_split = '2024-10-09'
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref_sm.h5"
+
+train_split = '2024-10-18'
+h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
+model_kind = 'call'
+
 model_dir = "workdir"
 num_epochs = 500
 loss_csv_file = os.path.join(model_dir,'loss.csv')
@@ -72,9 +77,9 @@ for epoch in range(num_epochs):
     test_loss_mse, test_loss_mae, test_loss_cal, test_loss_g, test_loss_integral = trainer(test_dataloader, model, device, optimizer, is_train=False)
     print(f'Epoch {epoch+1}/{num_epochs}, Test MSE: {test_loss_mse:.8f}, Test MAE: {test_loss_mae:.8f}, Test CAL: {test_loss_cal:.8f}, Test G: {test_loss_g:.8f}, Test Integral: {test_loss_integral:.8f}')
 
-    hyper_pth_file = os.path.join(model_dir,f"spx_hyper_{epoch:05d}.pth")
-    iv_pth_file = os.path.join(model_dir,f"spx_iv_{epoch:05d}.pth")
-    model_pth_file = os.path.join(model_dir,f'spx_model_{epoch:05d}.pth')
+    hyper_pth_file = os.path.join(model_dir,f"spx_hyper_{model_kind}_{epoch:05d}.pth")
+    iv_pth_file = os.path.join(model_dir,f"spx_iv_{model_kind}_{epoch:05d}.pth")
+    model_pth_file = os.path.join(model_dir,f'spx_model_{model_kind}_{epoch:05d}.pth')
     torch.save(hyper_model.state_dict(), hyper_pth_file)
     torch.save(iv_network.state_dict(), iv_pth_file)
     torch.save(model.state_dict(), model_pth_file)
