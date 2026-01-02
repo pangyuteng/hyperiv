@@ -1,4 +1,6 @@
 import os
+import sys
+import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import DataLoader
@@ -8,33 +10,46 @@ from trainer_util import trainer
 import torch.optim as optim
 import datetime
 
-train_split = '2025-12-19'
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref_call.h5"
-model_kind = 'call'
+model_kind = sys.argv[1]
+if model_kind in ['call','put']:
+    pass    
+else:
+    raise NotImplementedError()
+
+h5_file = f"/mnt/hd2bak/scratch/spx_w_ref_{model_kind}.h5"
 num_epochs = 500
-#raise ValueError()
-
-train_split = '2024-10-20'
-h5_file = "/mnt/hd2bak/scratch/spx_w_ref_put.h5"
-model_kind = 'put'
-num_epochs = 50
 model_dir = "workdir"
-
 loss_csv_file = os.path.join(model_dir,f'loss-{model_kind}.csv')
 
 os.makedirs(model_dir,exist_ok=True)
 df = pd.read_hdf(h5_file, 'df')
 print(df["date"].min(),df["date"].max())
 
+if False:
+    train_split = '2025-12-19'
+    train_dates = df[df["date"] < train_split]["date"].unique()
+    test_dates = df[df["date"] >= train_split]["date"].unique()
+else:
+    np.random.seed(42)
+    date_list = list(df["date"].unique())
+    np.random.shuffle(date_list)
+    split_idx = int(len(date_list)/9.0)
+    print(len(date_list))
+    print(split_idx)
+    train_dates = date_list[:split_idx*-1]
+    test_dates = date_list[split_idx*-1:]
+
+print(len(train_dates),len(test_dates))
+
 # "date" is now tstamp_sec, in data_prep.py we first filter data where tstamp_sec have >20 orders
 sample_N = 5
 N = 20
 B = 128
 
-train_dates = df[df["date"] < train_split]["date"].unique()
+
 train_dataset = OptionDataset(df[df["date"].isin(train_dates)], N=N, sample=True, sample_N=sample_N)
 train_dataloader = DataLoader(train_dataset, batch_size=B, shuffle=True, drop_last=True)
-test_dates = df[df["date"] >= train_split]["date"].unique()
+
 test_dataset = OptionDataset(df[df["date"].isin(test_dates)], N=N, sample=False, sample_N=sample_N)
 test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False, drop_last=False)
 
@@ -75,8 +90,8 @@ for epoch in range(num_epochs):
     hyper_pth_file = os.path.join(model_dir,f"spx_hyper_{model_kind}_{epoch:05d}.pth")
     iv_pth_file = os.path.join(model_dir,f"spx_iv_{model_kind}_{epoch:05d}.pth")
     model_pth_file = os.path.join(model_dir,f'spx_model_{model_kind}_{epoch:05d}.pth')
-    torch.save(hyper_model.state_dict(), hyper_pth_file)
-    torch.save(iv_network.state_dict(), iv_pth_file)
+    #torch.save(hyper_model.state_dict(), hyper_pth_file)
+    #torch.save(iv_network.state_dict(), iv_pth_file)
     torch.save(model.state_dict(), model_pth_file)
 
     myrow = dict(
